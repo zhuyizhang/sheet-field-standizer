@@ -1,0 +1,19 @@
+{
+  "name": "sheet-field-standizer",
+  "version": "1.0.0",
+  "description": "A package to clean and standardize Excel/Csv data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Yizhang Zhu",
+  "license": "ISC",
+  "dependencies": {
+    "iconv-lite": "^0.6.3",
+    "lodash": "^4.17.21",
+    "papaparse": "^5.4.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "type":"module"
+}
