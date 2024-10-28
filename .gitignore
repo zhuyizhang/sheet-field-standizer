@@ -4,6 +4,7 @@ node_modules/
 # Logs
 logs
 *.log
+log.*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -19,7 +20,7 @@ build/
 
 # Test and debug resources
 test_resources/
-test-outputs/
+test_outputs/
 
 # Environment variables
 .env
@@ -27,3 +28,6 @@ test-outputs/
 # Editor and OS files
 .idea/
 .vscode/
+
+# packed
+*.tgz
