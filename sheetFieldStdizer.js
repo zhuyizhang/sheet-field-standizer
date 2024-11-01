@@ -95,7 +95,7 @@ export class SheetFieldStdizer extends SheetParser {
    */
   doFieldStandardize(options = {}) {
     const sheetNames = options.sheetNames;
-    const skipSheetIds = options.skipSheetIds;
+    const skipSheetIds = options.skipSheetIds ?? [];
 
     const sheetsToProcess = (sheetNames
       ? (Array.isArray(sheetNames) ? sheetNames : [sheetNames])
@@ -149,13 +149,13 @@ export class SheetFieldStdizer extends SheetParser {
    * @returns {File} A File object containing the CSV data.
    */
   exportStandardLinesAsBlobCsv_browser(options = {}) {
-    const sheetName = options.sheetName;
-    const skipSheetIds = options.skipSheetIds;
+    let sheetName = options.sheetName;
+    const skipSheetIds = options.skipSheetIds ?? [];
 
     if (!sheetName) {
       sheetName = this.sheetsNames[0];
     }
-    if (skipSheetIds && skipSheetIds.includes(this.sheets[sheetName].uid)) {
+    if (skipSheetIds.includes(this.sheets[sheetName].uid)) {
       return;
     }
     const dataAOA = this.sheets[sheetName].standardFieldsLines;
