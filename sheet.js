@@ -45,7 +45,10 @@ export class Sheet {
 
     /** @type {string|undefined} Reason for invalidity, if applicable */
     invalidReason;
-    
+
+    /** @type {Object} Applied field map for this sheet */
+    fieldMap;
+
     /** @type {Object.<string, Array>} The standard fields data of the sheet, organized by field */
     standardFieldsDataAsObj;
 
@@ -64,8 +67,8 @@ export class Sheet {
         this.#validateSheet();
     }
 
-    #validateSheet(){
-        if(this.lines.length === 0){
+    #validateSheet() {
+        if (this.lines.length === 0) {
             this.invalid = true;
             this.invalidReason = "空表";
         }
@@ -100,7 +103,7 @@ export class Sheet {
      * Parses the data body and fields of the sheet.
      */
     parseOfDataBodyAndFields() {
-        if(this.invalid){
+        if (this.invalid) {
             return this;
         }
         console.log(`sheet{${this.sheetName}}，开始解析【表体结构】和【字段】。`);
@@ -329,4 +332,99 @@ export class Sheet {
         return bodyDict;
     }
 
+    determineFieldMap(fieldMapRuleApplied) {
+        const determineEachField = (actualFieldRules) => {
+            if (typeof actualFieldRules !== "string") {
+                throw new Error(`发生了错误！字段映射规则'${actualFieldRules}'应为字符串。`);
+            }
+            const regex = /\$\{([^}]*)\}/
+            const match = actualFieldRules.match(regex);
+
+            const regex2 = /^=~~[^|]+(\|[^|]+)*$/;
+            const match2 = actualFieldRules.match(regex2);
+            if (match) {
+                const fieldName = match[1];
+                return { type: "metadata", rules: actualFieldRules, fieldIndex: null, value: this.hasOwnProperty(fieldName) ? this[fieldName] : null };
+            }
+            else if (match2) {
+                const fieldPatterns = actualFieldRules.slice(3).split("|");
+                const fieldIndices = this.fields.map((field, i) => fieldPatterns.some((pattern) => field.includes(pattern)) ? i : null).filter((i) => i !== null);
+                return { type: "fields", rules: actualFieldRules, fieldIndex: fieldIndices, value: null };
+            }
+            else {
+                const fieldIndices = this.fields.map((field, i) => (field === actualFieldRules) ? i : null).filter((i) => i !== null);
+                return { type: "fields", rules: actualFieldRules, fieldIndex: fieldIndices, value: null };
+            }
+
+        }
+
+        const determineEachHead = (actualFieldRules) => {
+            if (typeof actualFieldRules !== "string") {
+                throw new Error(`发生了错误！字段映射规则'${actualFieldRules}'应为字符串。`);
+            }
+            if (actualFieldRules.includes("None") || actualFieldRules === "") {
+                return { type: "head", rules: actualFieldRules, fieldIndex: null, value: null };
+            }
+            if (actualFieldRules in this.headAndTailAsObj) {
+                return { type: "head", rules: actualFieldRules, fieldIndex: null, value: this.headAndTailAsObj[actualFieldRules] };
+            }
+            return { type: "head", rules: actualFieldRules, fieldIndex: null, value: null };
+        }
+
+        const fieldMapTemplate = structuredClone(fieldMapRuleApplied);
+        for (const [standardField, actualFieldRules] of Object.entries(fieldMapTemplate["body"])) {
+            fieldMapTemplate["body"][standardField] = determineEachField(actualFieldRules);
+        }
+        for (const [standardField, actualFieldRules] of Object.entries(fieldMapTemplate["head"])) {
+            fieldMapTemplate["head"][standardField] = determineEachHead(actualFieldRules);
+        }
+        this.fieldMap = fieldMapTemplate;
+    }
+
+    getStandardFieldsDataAsObj() {
+        let field_std_dict = {};
+        if (this.fieldMap["head"]) {
+            for (const [k, v] of Object.entries(this.fieldMap["head"])) {
+                field_std_dict[k] = Array(this.bodyDataLength).fill(v.value);
+            }
+        }
+        for (const [k, v] of Object.entries(this.fieldMap["body"])) {
+            const fieldNames = v.fieldIndex.map((i) => this.fields[i]);
+            if (v.fieldIndex.length === 0) {
+                field_std_dict[k] = Array(this.bodyDataLength).fill(v.value);
+            }
+            else if (v.fieldIndex.length === 1) {
+                field_std_dict[k] = this.bodyAsObj[fieldNames[0]];
+            }
+            else {
+                //待完成 多字段用delimiter拼接
+                field_std_dict[k] = this.bodyAsObj[fieldNames[0]];
+            }
+        }
+        return field_std_dict;
+    }
+
+
+    getStandardFieldsLines() {
+        // Initialize field_std_lines with keys from field_std_dict
+        let field_std_lines = [Object.keys(this.standardFieldsDataAsObj)];
+
+        // Transpose the values of field_std_dict using zip_longest
+        let values = Array.from(
+            _.zip(...Object.values(this.standardFieldsDataAsObj), { fillvalue: null })
+        ).map((arr) => arr.filter((item) => item !== undefined));
+
+        // Append transposed values to field_std_lines
+        field_std_lines.push(...values);
+
+        return field_std_lines;
+    }
+
+
+    getFieldMapAsFlat() {
+        if (!this.fieldMap) {
+            throw new Error("fieldMap未确定，请先调用determineFieldMap方法。");
+        }
+        return Object.assign({}, ...Object.values(this.fieldMap));
+    }
 }
