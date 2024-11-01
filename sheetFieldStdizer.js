@@ -156,7 +156,7 @@ export class SheetFieldStdizer extends SheetParser {
       sheetName = this.sheetsNames[0];
     }
     if (skipSheetIds.includes(this.sheets[sheetName].uid)) {
-      return;
+      throw new Error(`Sheet "${sheetName}" is not in the list of sheets to export.`);
     }
     const dataAOA = this.sheets[sheetName].standardFieldsLines;
     const fileName = `${this.fileNameWithoutExtension}_standardized`;
