@@ -2,11 +2,15 @@ import {
     commonUtils
 } from "./utilities/index.js";
 import _ from "lodash";
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Represents a sheet with its data and metadata.
  */
 export class Sheet {
+
+    /** @type {string} The unique identifier of the sheet */
+    uid;
 
     /** @type {string} The name of the sheet */
     sheetName;
@@ -64,6 +68,7 @@ export class Sheet {
         this.lines = lines;
         this.sheetName = sheetName;
         this.fileExtensionType = fileExtensionType;
+        this.uid = uuidv4();
         this.#validateSheet();
     }
 

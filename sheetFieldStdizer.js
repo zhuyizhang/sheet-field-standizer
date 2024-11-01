@@ -88,14 +88,18 @@ export class SheetFieldStdizer extends SheetParser {
   }
   /**
    * Standardizes fields for one or more sheets in the workbook.
-   * @param {string|string[]|undefined} sheetNames - The name(s) of the sheet(s) to standardize. If undefined, all sheets will be processed.
+   * @param {Object} [options={}] - Options for field standardization
+   * @param {string|string[]} [options.sheetNames] - The name(s) of the sheet(s) to standardize. If undefined, all sheets will be processed.
+   * @param {string[]} [options.skipSheetIds] - Array of sheet UIDs to skip during processing
    * @returns {this} The current instance of SheetFieldStdizer.
    */
-  doFieldStandardize(sheetNames = undefined) {
+  doFieldStandardize(options = {}) {
+    const sheetNames = options.sheetNames;
+    const skipSheetIds = options.skipSheetIds;
 
-    const sheetsToProcess = sheetNames
+    const sheetsToProcess = (sheetNames
       ? (Array.isArray(sheetNames) ? sheetNames : [sheetNames])
-      : this.sheetsNames;
+      : this.sheetsNames).filter(sheetName => !skipSheetIds.includes(this.sheets[sheetName].uid));
 
     for (const sheetName of sheetsToProcess) {
       const sheet = this.sheets[sheetName];
@@ -136,9 +140,23 @@ export class SheetFieldStdizer extends SheetParser {
     const file = new File([csvString], `${fileName}.csv`, { type: 'text/csv' });
     return file;
   }
-  exportStandardLinesAsBlobCsv_browser(sheetName = undefined) {
+
+  /**
+   * Export standardized lines as a CSV blob file in browser environment.
+   * @param {Object} options - The options for export.
+   * @param {string} [options.sheetName] - The name of the sheet to export. If not provided, will use the first sheet.
+   * @param {Array<string>} [options.skipSheetIds] - Array of sheet UIDs to skip during export.
+   * @returns {File} A File object containing the CSV data.
+   */
+  exportStandardLinesAsBlobCsv_browser(options = {}) {
+    const sheetName = options.sheetName;
+    const skipSheetIds = options.skipSheetIds;
+
     if (!sheetName) {
       sheetName = this.sheetsNames[0];
+    }
+    if (skipSheetIds && skipSheetIds.includes(this.sheets[sheetName].uid)) {
+      return;
     }
     const dataAOA = this.sheets[sheetName].standardFieldsLines;
     const fileName = `${this.fileNameWithoutExtension}_standardized`;
