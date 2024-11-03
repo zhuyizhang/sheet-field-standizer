@@ -469,11 +469,32 @@ export class Sheet {
         return field_std_lines;
     }
 
-
+    // deprecated
     getFieldMapAsFlat() {
         if (!this.fieldMap) {
             throw new Error("fieldMap未确定，请先调用determineFieldMap方法。");
         }
         return Object.assign({}, ...Object.values(this.fieldMap));
+    }
+
+    get fieldMapAsFlat() {
+        if (!this.fieldMap) {
+            throw new Error("fieldMap未确定，请先调用determineFieldMap方法。");
+        }
+        return Object.assign({}, ...Object.values(this.fieldMap));
+    }
+
+    setFieldIndices(standardFieldName, fieldIndices) {
+        if (this.fieldMap.head[standardFieldName]) {
+            this.fieldMap.head[standardFieldName].setFieldIndices(fieldIndices);
+        }
+        this.fieldMap.body[standardFieldName].setFieldIndices(fieldIndices);
+    }
+
+    setHeadValue(standardFieldName, value) {
+        if (this.fieldMap.head[standardFieldName]) {
+            this.fieldMap.head[standardFieldName].setHeadValue(value);;
+        }
+        this.fieldMap.body[standardFieldName].setHeadValue(value);;
     }
 }
