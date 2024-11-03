@@ -207,5 +207,11 @@ export class MappedActualField {
 
   setFieldIndices(fieldIndices) {
     this.fieldIndices = fieldIndices;
+    this.type = "fields";
+  }
+
+  setHeadValue(value) {
+    this.value = value;
+    this.type = "head";
   }
 }
