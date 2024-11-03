@@ -3,7 +3,7 @@ import {
 } from "./utilities/index.js";
 import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
-
+import { MappedActualField } from "./fieldMap.js";
 /**
  * Represents a sheet with its data and metadata.
  */
@@ -349,16 +349,39 @@ export class Sheet {
             const match2 = actualFieldRules.match(regex2);
             if (match) {
                 const fieldName = match[1];
-                return { type: "metadata", rules: actualFieldRules, fieldIndex: null, value: this.hasOwnProperty(fieldName) ? this[fieldName] : null };
+                
+                return new MappedActualField({
+                    type: "metadata",
+                    rules: actualFieldRules,
+                    fieldIndices: null,
+                    value: this.hasOwnProperty(fieldName) ? this[fieldName] : null,
+                    standardFieldName: null,
+                    sheetObjectFieldsNames: this.fields
+                });
+                
             }
             else if (match2) {
                 const fieldPatterns = actualFieldRules.slice(3).split("|");
                 const fieldIndices = this.fields.map((field, i) => fieldPatterns.some((pattern) => field.includes(pattern)) ? i : null).filter((i) => i !== null);
-                return { type: "fields", rules: actualFieldRules, fieldIndex: fieldIndices, value: null };
+                return new MappedActualField({
+                    type: "fields",
+                    rules: actualFieldRules,
+                    fieldIndices: fieldIndices,
+                    value: null,
+                    standardFieldName: null,
+                    sheetObjectFieldsNames: this.fields
+                });
             }
             else {
                 const fieldIndices = this.fields.map((field, i) => (field === actualFieldRules) ? i : null).filter((i) => i !== null);
-                return { type: "fields", rules: actualFieldRules, fieldIndex: fieldIndices, value: null };
+                return new MappedActualField({
+                    type: "fields",
+                    rules: actualFieldRules,
+                    fieldIndices: fieldIndices,
+                    value: null,
+                    standardFieldName: null,
+                    sheetObjectFieldsNames: this.fields
+                });
             }
 
         }
@@ -368,12 +391,33 @@ export class Sheet {
                 throw new Error(`发生了错误！字段映射规则'${actualFieldRules}'应为字符串。`);
             }
             if (actualFieldRules.includes("None") || actualFieldRules === "") {
-                return { type: "head", rules: actualFieldRules, fieldIndex: null, value: null };
+                return new MappedActualField({
+                    type: "head", 
+                    rules: actualFieldRules,
+                    fieldIndices: null,
+                    value: null,
+                    standardFieldName: null,
+                    sheetObjectFieldsNames: this.fields
+                });
             }
             if (actualFieldRules in this.headAndTailAsObj) {
-                return { type: "head", rules: actualFieldRules, fieldIndex: null, value: this.headAndTailAsObj[actualFieldRules] };
+                return new MappedActualField({
+                    type: "head",
+                    rules: actualFieldRules,
+                    fieldIndices: null,
+                    value: this.headAndTailAsObj[actualFieldRules],
+                    standardFieldName: null,
+                    sheetObjectFieldsNames: this.fields
+                });
             }
-            return { type: "head", rules: actualFieldRules, fieldIndex: null, value: null };
+            return new MappedActualField({
+                type: "head",
+                rules: actualFieldRules,
+                fieldIndices: null,
+                value: null,
+                standardFieldName: null,
+                sheetObjectFieldsNames: this.fields
+            });
         }
 
         const fieldMapTemplate = structuredClone(fieldMapRuleApplied);
@@ -394,11 +438,11 @@ export class Sheet {
             }
         }
         for (const [k, v] of Object.entries(this.fieldMap["body"])) {
-            const fieldNames = v.fieldIndex.map((i) => this.fields[i]);
-            if (v.fieldIndex.length === 0) {
+            const fieldNames = v.fieldNames;
+            if (v.fieldIndices.length === 0) {
                 field_std_dict[k] = Array(this.bodyDataLength).fill(v.value);
             }
-            else if (v.fieldIndex.length === 1) {
+            else if (v.fieldIndices.length === 1) {
                 field_std_dict[k] = this.bodyAsObj[fieldNames[0]];
             }
             else {

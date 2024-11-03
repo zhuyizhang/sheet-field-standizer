@@ -182,3 +182,30 @@ export class FieldMap {
     }
   }
 }
+
+
+export class MappedActualField {
+  type;
+  rules;
+  fieldIndices;
+  value;
+  standardFieldName;
+  sheetObjectFieldsNames;
+
+  constructor({type, rules, fieldIndices, value, standardFieldName, sheetObjectFieldsNames}) {
+    this.type = type;
+    this.rules = rules;
+    this.fieldIndices = fieldIndices;
+    this.value = value;
+    this.standardFieldName = standardFieldName;
+    this.sheetObjectFieldsNames = sheetObjectFieldsNames;
+  }
+
+  get fieldNames() {
+    return this.fieldIndices.map((index) => this.sheetObjectFieldsNames[index]);
+  }
+
+  setFieldIndices(fieldIndices) {
+    this.fieldIndices = fieldIndices;
+  }
+}
