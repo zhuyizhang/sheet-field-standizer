@@ -174,4 +174,12 @@ export class SheetFieldStdizer extends SheetParser {
     }
     return papaparse.unparse(dataAOA);
   }
+
+  setFieldIndices(sheetName, standardFieldName, fieldIndices) {
+    this.sheets[sheetName].setFieldIndices(standardFieldName, fieldIndices);
+  }
+
+  setHeadValue(sheetName, standardFieldName, value) {
+    this.sheets[sheetName].setHeadValue(standardFieldName, value);
+  }
 }
