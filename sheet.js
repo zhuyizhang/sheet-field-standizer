@@ -487,14 +487,18 @@ export class Sheet {
     setFieldIndices(standardFieldName, fieldIndices) {
         if (this.fieldMap.head[standardFieldName]) {
             this.fieldMap.head[standardFieldName].setFieldIndices(fieldIndices);
+            return;
         }
         this.fieldMap.body[standardFieldName].setFieldIndices(fieldIndices);
+        return this;
     }
 
     setHeadValue(standardFieldName, value) {
         if (this.fieldMap.head[standardFieldName]) {
-            this.fieldMap.head[standardFieldName].setHeadValue(value);;
+            this.fieldMap.head[standardFieldName].setHeadValue(value);
+            return this;
         }
-        this.fieldMap.body[standardFieldName].setHeadValue(value);;
+        this.fieldMap.body[standardFieldName].setHeadValue(value);
+        return this;
     }
 }
