@@ -180,11 +180,8 @@ export class FieldMap {
         console.log(`已解析<本表对象的简称>为：'${abbreviation}'`);
         return abbreviation;
       }
-      else {
-        // console.log(`【重要】未从文件名'${fileName}'中解析到<本表对象的简称>，请修改文件名！`);
-        throw new Error(`未从文件名'${fileName}'中解析到<本表对象的简称>，请修改文件名！`);
-      }
     }
+    throw new Error(`未从文件名'${fileName}'中解析到<本表对象的简称>，请修改文件名！`);
   }
 }
 
