@@ -338,7 +338,7 @@ export class Sheet {
     }
 
     determineFieldMap(fieldMapRuleApplied) {
-        const determineEachField = (actualFieldRules) => {
+        const determineEachField = (actualFieldRules, standardField) => {
             if (typeof actualFieldRules !== "string") {
                 throw new Error(`发生了错误！字段映射规则'${actualFieldRules}'应为字符串。`);
             }
@@ -355,7 +355,7 @@ export class Sheet {
                     rules: actualFieldRules,
                     fieldIndices: null,
                     value: this.hasOwnProperty(fieldName) ? this[fieldName] : null,
-                    standardFieldName: null,
+                    standardFieldName: standardField,
                     sheetObjectFieldsNames: this.fields
                 });
                 
@@ -368,7 +368,7 @@ export class Sheet {
                     rules: actualFieldRules,
                     fieldIndices: fieldIndices,
                     value: null,
-                    standardFieldName: null,
+                    standardFieldName: standardField,
                     sheetObjectFieldsNames: this.fields
                 });
             }
@@ -379,14 +379,14 @@ export class Sheet {
                     rules: actualFieldRules,
                     fieldIndices: fieldIndices,
                     value: null,
-                    standardFieldName: null,
+                    standardFieldName: standardField,
                     sheetObjectFieldsNames: this.fields
                 });
             }
 
         }
 
-        const determineEachHead = (actualFieldRules) => {
+        const determineEachHead = (actualFieldRules, standardField) => {
             if (typeof actualFieldRules !== "string") {
                 throw new Error(`发生了错误！字段映射规则'${actualFieldRules}'应为字符串。`);
             }
@@ -396,7 +396,7 @@ export class Sheet {
                     rules: actualFieldRules,
                     fieldIndices: null,
                     value: null,
-                    standardFieldName: null,
+                    standardFieldName: standardField,
                     sheetObjectFieldsNames: this.fields
                 });
             }
@@ -406,7 +406,7 @@ export class Sheet {
                     rules: actualFieldRules,
                     fieldIndices: null,
                     value: this.headAndTailAsObj[actualFieldRules],
-                    standardFieldName: null,
+                    standardFieldName: standardField,
                     sheetObjectFieldsNames: this.fields
                 });
             }
@@ -415,17 +415,17 @@ export class Sheet {
                 rules: actualFieldRules,
                 fieldIndices: null,
                 value: null,
-                standardFieldName: null,
+                standardFieldName: standardField,
                 sheetObjectFieldsNames: this.fields
             });
         }
 
         const fieldMapTemplate = structuredClone(fieldMapRuleApplied);
         for (const [standardField, actualFieldRules] of Object.entries(fieldMapTemplate["body"])) {
-            fieldMapTemplate["body"][standardField] = determineEachField(actualFieldRules);
+            fieldMapTemplate["body"][standardField] = determineEachField(actualFieldRules, standardField);
         }
         for (const [standardField, actualFieldRules] of Object.entries(fieldMapTemplate["head"])) {
-            fieldMapTemplate["head"][standardField] = determineEachHead(actualFieldRules);
+            fieldMapTemplate["head"][standardField] = determineEachHead(actualFieldRules, standardField);
         }
         this.fieldMap = fieldMapTemplate;
     }
