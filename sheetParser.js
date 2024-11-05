@@ -81,7 +81,7 @@ export class SheetParser {
             encoding: this.fileInfo.encoding || undefined,
             complete: function (results) {
               self.sheets = {};
-              self.sheets["sheet1"] = new Sheet(results.data, "sheet1", self.fileInfo.extensionType, this);
+              self.sheets["sheet1"] = new Sheet(results.data, "sheet1", self.fileInfo.extensionType, self);
               self.sheetsNames = Object.keys(self.sheets);
               resolve(self);
             },
