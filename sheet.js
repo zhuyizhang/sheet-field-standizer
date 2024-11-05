@@ -220,7 +220,7 @@ export class Sheet {
         }
         else if (this.fileExtensionType == "text") {
             lensList = lensList.map((len, i) =>
-                len <= 10 && len < this.fields.length ? 1 : 0
+                len <= 10 && len < (this.fields.length - 1) ? 1 : 0
             );
         }
 
