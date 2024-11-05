@@ -192,3 +192,18 @@ export function padSubArrays(arrays) {
 
   return arrays;
 }
+
+
+export function transpose(array) {
+  const rows = array.length;
+  const cols = array[0].length;
+  const result = Array.from({ length: cols }, () => Array(rows));
+
+  for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+          result[j][i] = array[i][j];
+      }
+  }
+
+  return result;
+}

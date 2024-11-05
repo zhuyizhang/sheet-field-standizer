@@ -64,13 +64,13 @@ export class Sheet {
      * @param {string} sheetName - The name of the sheet.
      * @param {string} fileExtensionType - The file extension type.
      */
-    constructor(lines, sheetName, fileExtensionType, sheetFieldStdizer=undefined) {
+    constructor(lines, sheetName, fileExtensionType, sheetFieldStdizer = undefined) {
         this.lines = lines;
         this.sheetName = sheetName;
         this.fileExtensionType = fileExtensionType;
         this.uid = uuidv4();
         this.#validateSheet();
-        this.sheetFieldStdizer=sheetFieldStdizer;
+        this.sheetFieldStdizer = sheetFieldStdizer;
     }
 
     #validateSheet() {
@@ -326,7 +326,11 @@ export class Sheet {
         }
 
         // Transpose matrix containing unequal-length vectors
-        let arrayOfColumns = _.zip(...linesTailored);
+        // let arrayOfColumns = _.zip(...linesTailored);
+        // const chunkSize = 1000; // Adjust chunk size based on memory and performance needs
+        // const transposedChunks = _.chunk(linesTailored, chunkSize).map(chunk => _.zip(...chunk));
+        // const arrayOfColumns = _.flatten(transposedChunks);
+        const arrayOfColumns = commonUtils.transpose(linesTailored);
 
         const bodyDict = {};
         this.fields.forEach((field, i) => {
@@ -350,7 +354,7 @@ export class Sheet {
             const match2 = actualFieldRules.match(regex2);
             if (match) {
                 const fieldName = match[1];
-                
+
                 return new MappedActualField({
                     type: "metadata",
                     rules: actualFieldRules,
@@ -358,11 +362,11 @@ export class Sheet {
                     value: !!Object.getOwnPropertyDescriptor(
                         Object.getPrototypeOf(this),
                         fieldName
-                      ) ? this[fieldName] : null,
+                    ) ? this[fieldName] : null,
                     standardFieldName: standardField,
                     sheetObjectFieldsNames: this.fields
                 });
-                
+
             }
             else if (match2) {
                 const fieldPatterns = actualFieldRules.slice(3).split("|");
@@ -396,7 +400,7 @@ export class Sheet {
             }
             if (actualFieldRules.includes("None") || actualFieldRules === "") {
                 return new MappedActualField({
-                    type: "head", 
+                    type: "head",
                     rules: actualFieldRules,
                     fieldIndices: null,
                     value: null,
@@ -468,8 +472,9 @@ export class Sheet {
         ).map((arr) => arr.filter((item) => item !== undefined));
 
         // Append transposed values to field_std_lines
-        field_std_lines.push(...values);
-
+        for (const value of values) {
+            field_std_lines.push(value);
+        }
         return field_std_lines;
     }
 

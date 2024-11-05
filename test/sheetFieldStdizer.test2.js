@@ -2,7 +2,8 @@ import { commonUtils } from "../utilities/index.js";
 import {SheetFieldStdizer} from "../sheetFieldStdizer.js"
 
 const filePaths = [
-  "./test_resources/zfb账单-202408/丰收计划-间连三四方基础覆盖激励_3182_202408.csv",
+  //"./test_resources/zfb账单-202408/丰收计划-间连三四方基础覆盖激励_3182_202408.csv",
+  "./test_resources/收钱吧间连4～12月离线出账（花呗）_5370_202409.csv",
   // "./test_resources/zfb账单-202408/企业团餐-设备活跃激励2.1_1465_202408.csv",
   // "./test_resources/zfb账单-202408/线下协作费-基础政策-当面资金授权_1776_202408.csv",
   // "./test_resources/zfb账单-202408/线下协作费-小程序基础支付政策_1722_202408.csv",
