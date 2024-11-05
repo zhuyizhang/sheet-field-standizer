@@ -67,7 +67,7 @@ export class SheetParser {
           for (const sheetName of this.workbook.SheetNames) {
             const worksheet = this.#openWorksheet(this.workbook, sheetName);
             const lines = this.#sheetToArrayOfArray(worksheet);
-            this.sheets[sheetName] = new Sheet(lines, sheetName, this.fileInfo.extensionType);
+            this.sheets[sheetName] = new Sheet(lines, sheetName, this.fileInfo.extensionType, this);
             
           }
           this.sheetsNames = Object.keys(this.sheets);
@@ -81,7 +81,7 @@ export class SheetParser {
             encoding: this.fileInfo.encoding || undefined,
             complete: function (results) {
               self.sheets = {};
-              self.sheets["sheet1"] = new Sheet(results.data, "sheet1", self.fileInfo.extensionType);
+              self.sheets["sheet1"] = new Sheet(results.data, "sheet1", self.fileInfo.extensionType, this);
               self.sheetsNames = Object.keys(self.sheets);
               resolve(self);
             },

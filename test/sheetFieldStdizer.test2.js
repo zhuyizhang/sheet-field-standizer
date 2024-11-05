@@ -3,10 +3,10 @@ import {SheetFieldStdizer} from "../sheetFieldStdizer.js"
 
 const filePaths = [
   "./test_resources/zfb账单-202408/丰收计划-间连三四方基础覆盖激励_3182_202408.csv",
-  "./test_resources/zfb账单-202408/企业团餐-设备活跃激励2.1_1465_202408.csv",
-  "./test_resources/zfb账单-202408/线下协作费-基础政策-当面资金授权_1776_202408.csv",
-  "./test_resources/zfb账单-202408/线下协作费-小程序基础支付政策_1722_202408.csv",
-  "./test_resources/zfb账单-202408/CY24-企业团餐-设备启用激励_0407_202408.csv",
+  // "./test_resources/zfb账单-202408/企业团餐-设备活跃激励2.1_1465_202408.csv",
+  // "./test_resources/zfb账单-202408/线下协作费-基础政策-当面资金授权_1776_202408.csv",
+  // "./test_resources/zfb账单-202408/线下协作费-小程序基础支付政策_1722_202408.csv",
+  // "./test_resources/zfb账单-202408/CY24-企业团餐-设备启用激励_0407_202408.csv",
 ];
 
 

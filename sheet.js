@@ -64,12 +64,13 @@ export class Sheet {
      * @param {string} sheetName - The name of the sheet.
      * @param {string} fileExtensionType - The file extension type.
      */
-    constructor(lines, sheetName, fileExtensionType) {
+    constructor(lines, sheetName, fileExtensionType, sheetFieldStdizer=undefined) {
         this.lines = lines;
         this.sheetName = sheetName;
         this.fileExtensionType = fileExtensionType;
         this.uid = uuidv4();
         this.#validateSheet();
+        this.sheetFieldStdizer=sheetFieldStdizer;
     }
 
     #validateSheet() {
@@ -353,8 +354,11 @@ export class Sheet {
                 return new MappedActualField({
                     type: "metadata",
                     rules: actualFieldRules,
-                    fieldIndices: null,
-                    value: this.hasOwnProperty(fieldName) ? this[fieldName] : null,
+                    fieldIndices: [],
+                    value: !!Object.getOwnPropertyDescriptor(
+                        Object.getPrototypeOf(this),
+                        fieldName
+                      ) ? this[fieldName] : null,
                     standardFieldName: standardField,
                     sheetObjectFieldsNames: this.fields
                 });
@@ -482,6 +486,14 @@ export class Sheet {
             throw new Error("fieldMap未确定，请先调用determineFieldMap方法。");
         }
         return Object.assign({}, ...Object.values(this.fieldMap));
+    }
+
+    get fullName() {
+        return this.sheetFieldStdizer.fieldMapConfig.fullName;
+    }
+
+    get fileName() {
+        return this.sheetFieldStdizer.fileName;
     }
 
     setFieldIndices(standardFieldName, fieldIndices) {

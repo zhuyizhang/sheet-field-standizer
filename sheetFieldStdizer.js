@@ -5,6 +5,14 @@ import papaparse from "papaparse";
 
 export class SheetFieldStdizer extends SheetParser {
   fieldMap;
+  /**
+   * Configuration object for field mapping, containing the determined field map settings
+   * based on the input file name. This is populated after calling determineFieldMapConfig().
+   * @type {Object}
+   * @property {string} abbreviation - The abbreviated name/code for the field map
+   * @property {string} fullName - The complete name/description of the field map
+   * @property {Object} fieldMapApplicable - The applicable field mapping rules and configurations
+   */
   fieldMapConfig;
 
 
