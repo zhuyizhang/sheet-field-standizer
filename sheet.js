@@ -298,7 +298,7 @@ export class Sheet {
             for (let i = 0; i < lineTailored.length / 2; i++) {
                 const k = lineTailored[2 * i].trim();
                 const v = lineTailored[2 * i + 1];
-                headTailObj[k] = v;
+                headTailObj[k] =  typeof v === 'string' ? v.trim() : v;
             }
         }
         return headTailObj;
