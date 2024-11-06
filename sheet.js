@@ -330,7 +330,13 @@ export class Sheet {
         // const chunkSize = 1000; // Adjust chunk size based on memory and performance needs
         // const transposedChunks = _.chunk(linesTailored, chunkSize).map(chunk => _.zip(...chunk));
         // const arrayOfColumns = _.flatten(transposedChunks);
-        const arrayOfColumns = commonUtils.transpose(linesTailored);
+        let arrayOfColumns = commonUtils.transpose(linesTailored);
+
+        //trim clean 
+        arrayOfColumns = arrayOfColumns.map(column =>
+            column.map(value => typeof value === 'string' ? value.trim() : value)
+        );
+
 
         const bodyDict = {};
         this.fields.forEach((field, i) => {
@@ -408,7 +414,7 @@ export class Sheet {
                     sheetObjectFieldsNames: this.fields
                 });
             }
-            if (actualFieldRules in this.headAndTailAsObj) {
+            if (actualFieldRules in this.headAndTailAsObj && this.headAndTailAsObj[actualFieldRules] !== undefined) {
                 return new MappedActualField({
                     type: "head",
                     rules: actualFieldRules,
