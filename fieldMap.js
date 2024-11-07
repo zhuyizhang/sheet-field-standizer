@@ -194,7 +194,7 @@ export class MappedActualField {
   standardFieldName;
   sheetObjectFieldsNames;
 
-  constructor({type, rules, fieldIndices, value, standardFieldName, sheetObjectFieldsNames}) {
+  constructor({ type, rules, fieldIndices, value, standardFieldName, sheetObjectFieldsNames }) {
     this.type = type;
     this.rules = rules;
     this.fieldIndices = fieldIndices;
@@ -217,5 +217,49 @@ export class MappedActualField {
     this.value = value;
     this.type = "head";
     this.fieldIndices = null;
+  }
+
+  /**
+   * A getter that returns the value or field names to be rendered
+   * @returns {[string[], string]} A tuple where:
+   *   - First element is an array of strings to be rendered to web users.
+   *   - Second element is a string indicating the type: "constant", "empty", "warning", or "fields"
+   */
+  get valueOrFieldNamesToRender() {
+    return this.getValueOrFieldNamesToRender();
+  }
+
+  /**
+   * Gets the value or field names to be rendered based on the field's type and state
+   * @returns {[string[], string]} A tuple where:
+   *   - First element is an array of strings to be rendered to web users.
+   *   - Second element is a string indicating the type: "constant", "empty", "warning", or "fields"
+   */
+  getValueOrFieldNamesToRender() {
+    if (this.type === "head" && this.value !== null && this.value !== undefined) {
+      return [[this.value], "constant"];
+    }
+    else if (this.type === "head" && ["None", ""].includes(this.rules)) {
+      return [["空-未配置"], "empty"];
+    }
+    else if (this.type === "head" && !["None", ""].includes(this.rules)) {
+      return [["空-未匹得"], "warning"];
+    }
+    else if (this.type === "metadata" && this.value !== null && this.value !== undefined) {
+      return [[this.value], "constant"];
+    }
+    else if (this.type === "metadata") {
+      return [["空-未匹得"], "warning"];
+    }
+    else if (this.type === "fields" && this.fieldIndices.length > 0) {
+      return [this.fieldNames, "fields"];
+    }
+    else if (this.type === "fields" && this.fieldIndices.length === 0 && ["None", ""].includes(this.rules)) {
+      return [["空-未配置"], "empty"];
+    }
+    else if (this.type === "fields" && this.fieldIndices.length === 0 && !["None", ""].includes(this.rules)) {
+      return [["空-未匹得"], "warning"];
+    }
+    throw new Error("未知情况");
   }
 }
