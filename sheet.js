@@ -446,24 +446,43 @@ export class Sheet {
 
     getStandardFieldsDataAsObj() {
         let field_std_dict = {};
-        if (this.fieldMap["head"]) {
-            for (const [k, v] of Object.entries(this.fieldMap["head"])) {
-                field_std_dict[k] = Array(this.bodyDataLength).fill(v.value);
+
+        for (const [standardField, actualField] of Object.entries(this.fieldMapAsFlat)) {
+            if (actualField.type === "head") {
+                field_std_dict[standardField] = Array(this.bodyDataLength).fill(actualField.value);
+            }
+            else if (actualField.type === "fields") {
+                if (actualField.fieldIndices.length === 0) {
+                    field_std_dict[standardField] = Array(this.bodyDataLength).fill(actualField.value); // 应该是null
+                }
+                else if (actualField.fieldIndices.length === 1) {
+                    field_std_dict[standardField] = this.bodyAsObj[actualField.fieldNames[0]];
+                }
+                else {
+                    //待完成 多字段用delimiter拼接
+                    field_std_dict[standardField] = this.bodyAsObj[actualField.fieldNames[0]];
+                }
             }
         }
-        for (const [k, v] of Object.entries(this.fieldMap["body"])) {
-            const fieldNames = v.fieldNames;
-            if (v.fieldIndices.length === 0) {
-                field_std_dict[k] = Array(this.bodyDataLength).fill(v.value);
-            }
-            else if (v.fieldIndices.length === 1) {
-                field_std_dict[k] = this.bodyAsObj[fieldNames[0]];
-            }
-            else {
-                //待完成 多字段用delimiter拼接
-                field_std_dict[k] = this.bodyAsObj[fieldNames[0]];
-            }
-        }
+
+        // if (this.fieldMap["head"]) {
+        //     for (const [k, v] of Object.entries(this.fieldMap["head"])) {
+        //         field_std_dict[k] = Array(this.bodyDataLength).fill(v.value);
+        //     }
+        // }
+        // for (const [k, v] of Object.entries(this.fieldMap["body"])) {
+        //     const fieldNames = v.fieldNames;
+        //     if (v.fieldIndices.length === 0) {
+        //         field_std_dict[k] = Array(this.bodyDataLength).fill(v.value);
+        //     }
+        //     else if (v.fieldIndices.length === 1) {
+        //         field_std_dict[k] = this.bodyAsObj[fieldNames[0]];
+        //     }
+        //     else {
+        //         //待完成 多字段用delimiter拼接
+        //         field_std_dict[k] = this.bodyAsObj[fieldNames[0]];
+        //     }
+        // }
         return field_std_dict;
     }
 
