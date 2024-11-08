@@ -185,9 +185,9 @@ export class SheetFieldStdizer extends SheetParser {
     // 所有sheet合并导出
     const dataAoaCombined = sheetNames.map((sheetName, i) => {
       if (i === 0) {
-        return this.getStandardLinesAsCsvString(sheetName, false, true);
+        return this.getStandardLinesAOAToExport(sheetName, false, true);
       } else {
-        return this.getStandardLinesAsCsvString(sheetName, true, true);
+        return this.getStandardLinesAOAToExport(sheetName, true, true);
       }
     }).flat();
     const csvString = papaparse.unparse(dataAoaCombined);
@@ -195,7 +195,7 @@ export class SheetFieldStdizer extends SheetParser {
     return [file];
   }
 
-  getStandardLinesAsCsvString(sheetName = undefined, skipFirstLine = false, sheetNameColumn = false) {
+  getStandardLinesAOAToExport(sheetName = undefined, skipFirstLine = false, sheetNameColumn = false) {
     if (!sheetName) {
       sheetName = this.sheetsNames[0];
     }
@@ -214,7 +214,7 @@ export class SheetFieldStdizer extends SheetParser {
       dataAOA.shift();
     }
 
-    return papaparse.unparse(dataAOA);
+    return dataAOA;
   }
 
   setFieldIndices(sheetName, standardFieldName, fieldIndices) {
