@@ -152,34 +152,68 @@ export class SheetFieldStdizer extends SheetParser {
   /**
    * Export standardized lines as a CSV blob file in browser environment.
    * @param {Object} options - The options for export.
-   * @param {string} [options.sheetName] - The name of the sheet to export. If not provided, will use the first sheet.
+   * @param {string} [options.sheetNames] - The name of the sheet to export. If not provided, will use the first sheet.
    * @param {Array<string>} [options.skipSheetIds] - Array of sheet UIDs to skip during export.
-   * @returns {File} A File object containing the CSV data.
+   * @param {boolean} [options.combineSheets=true] - Whether to combine all sheets into a single file. If false, each sheet will be exported as a separate file.
+   * @returns {File[]} An array of File objects containing the CSV data. Returns multiple files if combineSheets is false.
    */
   exportStandardLinesAsBlobCsv_browser(options = {}) {
-    let sheetName = options.sheetName;
+    let sheetNames = options.sheetNames;
     const skipSheetIds = options.skipSheetIds ?? [];
+    const combineSheets = options.combineSheets ?? true;
 
-    if (!sheetName) {
-      sheetName = this.sheetsNames[0];
+    if (!sheetNames) {
+      sheetNames = [this.sheetsNames[0]];
     }
-    if (skipSheetIds.includes(this.sheets[sheetName].uid)) {
-      throw new Error(`Sheet "${sheetName}" is not in the list of sheets to export.`);
+    sheetNames = sheetNames.filter(sheetName => !skipSheetIds.includes(this.sheets[sheetName].uid));
+    if (sheetNames.length === 0) {
+      throw new Error(`At least one sheet must be provided.`);
     }
-    const dataAOA = this.sheets[sheetName].standardFieldsLines;
-    const fileName = `${this.fileNameWithoutExtension}_standardized`;
-    const csvString = papaparse.unparse(dataAOA);
-    const file = new File([csvString], `${fileName}.csv`, { type: 'text/csv' });
-    return file;
+
+
+    // 每个sheet 1个文件导出
+    if (combineSheets === false) {
+      const files = sheetNames.map((sheetName, i) => {
+        const dataAOA = this.sheets[sheetName].standardFieldsLines;
+        const fileName = `${this.fileNameWithoutExtension}_${sheetName}_standardized`;
+        const csvString = papaparse.unparse(dataAOA);
+        const file = new File([csvString], `${fileName}.csv`, { type: 'text/csv' });
+        return file;
+      });
+      return files;
+    }
+    // 所有sheet合并导出
+    const dataAoaCombined = sheetNames.map((sheetName, i) => {
+      if (i === 0) {
+        return this.getStandardLinesAsCsvString(sheetName, false, true);
+      } else {
+        return this.getStandardLinesAsCsvString(sheetName, true, true);
+      }
+    }).flat();
+    const csvString = papaparse.unparse(dataAoaCombined);
+    const file = new File([csvString], `${this.fileNameWithoutExtension}_standardized.csv`, { type: 'text/csv' });
+    return [file];
   }
-  getStandardLinesAsCsvString(sheetName = undefined, skipFirstLine = false) {
+
+  getStandardLinesAsCsvString(sheetName = undefined, skipFirstLine = false, sheetNameColumn = false) {
     if (!sheetName) {
       sheetName = this.sheetsNames[0];
     }
     let dataAOA = this.sheets[sheetName].standardFieldsLines;
+
+    if (sheetNameColumn) {
+      for (let i = 0; i < dataAOA.length; i++) {
+        if (i === 0) {
+          dataAOA[i].push("sheetName");
+        } else {
+          dataAOA[i].push(sheetName);
+        }
+      }
+    }
     if (skipFirstLine) {
       dataAOA.shift();
     }
+
     return papaparse.unparse(dataAOA);
   }
 
