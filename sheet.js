@@ -529,4 +529,15 @@ export class Sheet {
     get standardFieldsLinesWithSheetName() {
         return this.standardFieldsLines.map((line, i) => [...line, i === 0 ? "sheetName" : this.sheetName]);
     }
+
+    getStandardLinesAOAToExport(skipFirstLine = false, sheetNameColumn = false) {
+
+        let dataAOA = sheetNameColumn ? this.standardFieldsLinesWithSheetName : this.standardFieldsLines;
+    
+        if (skipFirstLine) {
+          dataAOA = dataAOA.slice(1);
+        }
+    
+        return dataAOA;
+      }
 }

@@ -200,13 +200,8 @@ export class SheetFieldStdizer extends SheetParser {
     if (!sheetName) {
       sheetName = this.sheetsNames[0];
     }
-    let dataAOA = sheetNameColumn ? this.sheets[sheetName].standardFieldsLinesWithSheetName : this.sheets[sheetName].standardFieldsLines;
 
-    if (skipFirstLine) {
-      dataAOA = dataAOA.slice(1);
-    }
-
-    return dataAOA;
+    return this.sheets[sheetName].getStandardLinesAOAToExport(skipFirstLine, sheetNameColumn);
   }
 
   setFieldIndices(sheetName, standardFieldName, fieldIndices) {
