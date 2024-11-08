@@ -195,23 +195,15 @@ export class SheetFieldStdizer extends SheetParser {
     return [file];
   }
 
+  // 这是sheet的method吗？待定。
   getStandardLinesAOAToExport(sheetName = undefined, skipFirstLine = false, sheetNameColumn = false) {
     if (!sheetName) {
       sheetName = this.sheetsNames[0];
     }
-    let dataAOA = this.sheets[sheetName].standardFieldsLines;
+    let dataAOA = sheetNameColumn ? this.sheets[sheetName].standardFieldsLinesWithSheetName : this.sheets[sheetName].standardFieldsLines;
 
-    if (sheetNameColumn) {
-      for (let i = 0; i < dataAOA.length; i++) {
-        if (i === 0) {
-          dataAOA[i].push("sheetName");
-        } else {
-          dataAOA[i].push(sheetName);
-        }
-      }
-    }
     if (skipFirstLine) {
-      dataAOA.shift();
+      dataAOA = dataAOA.slice(1);
     }
 
     return dataAOA;
