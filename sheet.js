@@ -298,7 +298,7 @@ export class Sheet {
             for (let i = 0; i < lineTailored.length / 2; i++) {
                 const k = lineTailored[2 * i].trim();
                 const v = lineTailored[2 * i + 1];
-                headTailObj[k] =  typeof v === 'string' ? v.trim() : v;
+                headTailObj[k] = typeof v === 'string' ? v.trim() : v;
             }
         }
         return headTailObj;
@@ -531,14 +531,17 @@ export class Sheet {
     }
 
     getStandardLinesAOAToExport(options = {}) {
+        console.log('options', options);
         const { skipFirstLine = false, sheetNameColumn = false } = options;
+        console.log('skipFirstLine', skipFirstLine);
+        console.log('sheetNameColumn', sheetNameColumn);
 
         let dataAOA = sheetNameColumn ? this.standardFieldsLinesWithSheetName : this.standardFieldsLines;
-    
+
         if (skipFirstLine) {
-          dataAOA = dataAOA.slice(1);
+            dataAOA = dataAOA.slice(1);
         }
-    
+
         return dataAOA;
-      }
+    }
 }
