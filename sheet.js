@@ -531,10 +531,7 @@ export class Sheet {
     }
 
     getStandardLinesAOAToExport(options = {}) {
-        console.log('options', options);
         const { skipFirstLine = false, sheetNameColumn = false } = options;
-        console.log('skipFirstLine', skipFirstLine);
-        console.log('sheetNameColumn', sheetNameColumn);
 
         let dataAOA = sheetNameColumn ? this.standardFieldsLinesWithSheetName : this.standardFieldsLines;
 

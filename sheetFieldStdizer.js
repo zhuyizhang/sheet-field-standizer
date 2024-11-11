@@ -185,9 +185,9 @@ export class SheetFieldStdizer extends SheetParser {
     // 所有sheet合并导出
     const dataAoaCombined = sheetNames.map((sheetName, i) => {
       if (i === 0) {
-        return this.getStandardLinesAOAToExport(sheetName, false, true);
+        return this.getStandardLinesAOAToExport(sheetName, { skipFirstLine: false, sheetNameColumn: true });
       } else {
-        return this.getStandardLinesAOAToExport(sheetName, true, true);
+        return this.getStandardLinesAOAToExport(sheetName, { skipFirstLine: true, sheetNameColumn: true });
       }
     }).flat();
     const csvString = papaparse.unparse(dataAoaCombined);
@@ -195,13 +195,13 @@ export class SheetFieldStdizer extends SheetParser {
     return [file];
   }
 
-  // 这是sheet的method吗？待定。
-  getStandardLinesAOAToExport(sheetName = undefined, skipFirstLine = false, sheetNameColumn = false) {
+  getStandardLinesAOAToExport(sheetName = undefined, options) {
+    const { skipFirstLine = false, sheetNameColumn = false } = options;
     if (!sheetName) {
       sheetName = this.sheetsNames[0];
     }
 
-    return this.sheets[sheetName].getStandardLinesAOAToExport(skipFirstLine, sheetNameColumn);
+    return this.sheets[sheetName].getStandardLinesAOAToExport({ skipFirstLine, sheetNameColumn });
   }
 
   setFieldIndices(sheetName, standardFieldName, fieldIndices) {
