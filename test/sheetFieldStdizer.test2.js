@@ -5,7 +5,8 @@ const filePaths = [
   //"./test_resources/zfb账单-202409/【N项目】间连三四方笔数激励政策_3153_202409.csv",
   // "./test_resources/zfb账单-202409/谷雨计划激励_8401_202409.csv",
   // "./test_resources/zfb账单-202409/间连线上下蓝码服务商交易返佣_5729_202409.csv",
-   "./test_resources/zfb账单-202409/间连红包码覆盖6月激励政策_1008_202409.csv",
+  //"./test_resources/zfb账单-202409/间连红包码覆盖6月激励政策_1008_202409.csv",
+  "./test_resources/银行合作账单测试/单文件/收钱吧&温州民生2024年01月-03月结算单.xlsx",
   //"./test_resources/zfb账单-202408/丰收计划-间连三四方基础覆盖激励_3182_202408.csv",
   //"./test_resources/收钱吧间连4～12月离线出账（花呗）_5370_202409.csv",
   // "./test_resources/zfb账单-202408/企业团餐-设备活跃激励2.1_1465_202408.csv",
@@ -15,8 +16,8 @@ const filePaths = [
 ];
 
 
-
-const fieldMapPath = "./test_resources/alibill_field_map_202409.json";
+const fieldMapPath = "./test_resources/bankCoopBillFieldMap.json";
+//const fieldMapPath = "./test_resources/alibill_field_map_202409.json";
 const exportFileName = `test_outputs/export_${commonUtils.getCurrentTimestamp()}.csv`;
 //const exportFileName = `test_outputs/export_${commonUtils.getCurrentTimestamp()}.csv`;
 

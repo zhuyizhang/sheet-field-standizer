@@ -448,7 +448,7 @@ export class Sheet {
         let field_std_dict = {};
 
         for (const [standardField, actualField] of Object.entries(this.fieldMapAsFlat)) {
-            if (actualField.type === "head") {
+            if (actualField.type === "head" || actualField.type === "metadata") {
                 field_std_dict[standardField] = Array(this.bodyDataLength).fill(actualField.value);
             }
             else if (actualField.type === "fields") {
