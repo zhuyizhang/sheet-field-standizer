@@ -527,13 +527,16 @@ export class Sheet {
     }
 
     get standardFieldsLinesWithSheetName() {
+        console.log('this.sheetName', this.sheetName);
         return this.standardFieldsLines.map((line, i) => [...line, i === 0 ? "sheetName" : this.sheetName]);
     }
 
     getStandardLinesAOAToExport(skipFirstLine = false, sheetNameColumn = false) {
+        console.log('sheetNameColumn', sheetNameColumn);
 
         let dataAOA = sheetNameColumn ? this.standardFieldsLinesWithSheetName : this.standardFieldsLines;
     
+        console.log('this.standardFieldsLinesWithSheetName', this.standardFieldsLinesWithSheetName);
         if (skipFirstLine) {
           dataAOA = dataAOA.slice(1);
         }
