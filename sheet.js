@@ -334,7 +334,7 @@ export class Sheet {
 
         //trim clean 
         arrayOfColumns = arrayOfColumns.map(column =>
-            column.map(value => typeof value === 'string' ? value.trim() : value)
+            column.map(value => typeof value === 'string' ? value.trim() : value === undefined ? null : value)
         );
 
 
@@ -460,7 +460,9 @@ export class Sheet {
                 }
                 else {
                     //待完成 多字段用delimiter拼接
-                    field_std_dict[standardField] = this.bodyAsObj[actualField.fieldNames[0]];
+                    const columnsAOA = actualField.fieldNames.map((fieldName) => this.bodyAsObj[fieldName]);
+                    const concated = columnsAOA[0].map((_, i) => columnsAOA.map(row => row[i]).join('|'));
+                    field_std_dict[standardField] = concated;
                 }
             }
         }
