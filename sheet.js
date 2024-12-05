@@ -249,7 +249,10 @@ export class Sheet {
         }
 
         if (endLineIndex_way2 > endLineIndex_way1) {
-            return endLineIndex_way1;
+            if ((endLineIndex_way2 - endLineIndex_way1) < 8) {
+                return endLineIndex_way1
+            } // 表尾一般不会超过 n行 
+            return endLineIndex_way2; //待定
         }
         return endLineIndex_way2;
     }
